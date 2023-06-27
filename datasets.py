@@ -98,37 +98,52 @@ class CustomDataset(Dataset):
         tr_val            - whether the dataset is train or validation, bool;
         im_files          - valid image file extensions, list -> str. 
         
-    Outputs:
+    Output:
     
-        trainloader    - train dataloader, torch dataloader object;
-        testloader     - test dataloader, torch dataloader object;
-        num_classes    - number of classes in the dataset, int.
+        ds                - dataset with the images from the root, torch dataset object.
     
     """
     
     def __init__(self, root, transformations = None, tr_val = "train", im_files = [".jpg", ".png", ".jpeg"]):
         
+        # Get parameter arguments
         self.transformations = transformations
+        # Get image paths list from the root
         self.ims = glob(f"{root}/{tr_val}/*/*[{im_file for im_file in im_files}]")
 
+    # Set the length of the dataset
     def  __len__(self): return len(self.ims)
 
     def __getitem__(self, idx): 
-        
-        im_path = self.ims[idx]
-        # print(im_path)
-        dirs = os.path.dirname(im_path)
-        # print(dirs)
-        cls_name = dirs.split("/")[-1]
-        # print(cls_name)
 
+        """
+
+        This function gets an index and returns an image and gt pair.
+
+        Parameter:
+
+            idx    - index of the data in the dataset, int.
+
+        Outputs:
+
+            im     - an image, tensor;
+            gt     - label of the image, tensor.
+        
+        """
+        
+        # Get the image path
+        im_path = self.ims[idx]
+        # Get the class name
+        dirs = os.path.dirname(im_path); cls_name = dirs.split("/")[-1]
+
+        # Read the image
         im = Image.open(im_path).convert("RGB")
+        # Set the label
         gt = int(1) if "bees" in cls_name else int(0)
         
+        # Apply transformations
         if self.transformations is not None: im = self.transformations(im)
-        # gt = torch.Tensor(gt).unsqueeze(0)
-        # gt = torch.Tensor(gt)
-        
+       
         return im, gt
 
 class CustomDataloader(nn.Module):
