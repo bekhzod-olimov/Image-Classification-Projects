@@ -86,6 +86,25 @@ def get_dl(ds_name, tr_tfs, val_tfs, bs):
     return trainloader, val_dl, test_dl, cls_names, num_classes
 
 class CustomDataset(Dataset):
+
+    """ 
+    
+    This class gets several parameters and returns CustomImageClassificationDataset.
+    
+    Parameters:
+    
+        root              - path to data with images, str;
+        transformations   - transformations, torchvision transforms object;
+        tr_val            - whether the dataset is train or validation, bool;
+        im_files          - valid image file extensions, list -> str. 
+        
+    Outputs:
+    
+        trainloader    - train dataloader, torch dataloader object;
+        testloader     - test dataloader, torch dataloader object;
+        num_classes    - number of classes in the dataset, int.
+    
+    """
     
     def __init__(self, root, transformations = None, tr_val = "train", im_files = [".jpg", ".png", ".jpeg"]):
         
