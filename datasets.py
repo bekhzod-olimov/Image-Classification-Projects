@@ -159,6 +159,10 @@ class CustomDataloader(nn.Module):
         bs                - mini batch size of the dataloaders, int;
         im_files          - valid image extensions, list -> str;
         data_split        - data split information, list -> float.
+
+    Outputs:
+
+        dls               - train, validation, and test dataloaders, torch dataloader objects.
     
     """
     
@@ -180,7 +184,9 @@ class CustomDataloader(nn.Module):
         self.total_ims = len(self.ds)
         
         # Data split
+        # Get train and validation lengths
         tr_len, val_len = int(self.total_ims * data_split[0]), int(self.total_ims * data_split[1])
+        # Get test length based on the train and validation lengths
         test_len = self.total_ims - (tr_len + val_len)
         
         # Get train, validation, and test datasets based on the data split information
@@ -211,8 +217,10 @@ class CustomDataloader(nn.Module):
         if os.path.splitext(path)[-1] in self.im_files: return True
         return False
     
+    # Get dataloaders based on the dataset objects
     def get_dls(self): return [DataLoader(dataset = ds, batch_size = self.bs, shuffle = True, num_workers = 8) for ds in self.all_ds.values()]
     
+    # Get information on the dataset
     def get_info(self): return self.ds.classes, len(self.ds.classes)
         
 # tfs = T.Compose([T.Resize((224,224)), T.ToTensor()])
