@@ -48,16 +48,16 @@ def run(args):
 if __name__ == "__main__":
     
     # Initialize Argument Parser    
-    parser = argparse.ArgumentParser(description = 'Image Classification Training Arguments')
+    parser = argparse.ArgumentParser(description = "Image Classification Inference Arguments")
     
     # Add arguments to the parser
     parser.add_argument("-is", "--inp_im_size", type = tuple, default = (224, 224), help = "Input image size")
-    parser.add_argument("-dn", "--dataset_name", type = str, default = 'cars', help = "Dataset name for training")
-    parser.add_argument("-mn", "--model_name", type = str, default = 'rexnet_150', help = "Model name for backbone")
-    parser.add_argument("-d", "--device", type = str, default = 'cuda:3', help = "GPU device name")
+    parser.add_argument("-dn", "--dataset_name", type = str, default = "cars", help = "Dataset name for training")
+    parser.add_argument("-mn", "--model_name", type = str, default = "rexnet_150", help = "Model name to be trained (from timm library)")
     # parser.add_argument("-mn", "--model_name", type = str, default = 'vit_base_patch16_224', help = "Model name for backbone")
     # parser.add_argument("-mn", "--model_name", type = str, default = 'vgg16_bn', help = "Model name for backbone")
-    parser.add_argument("-sm", "--save_model_path", type = str, default = 'saved_models', help = "Path to the directory to save a trained model")
+    parser.add_argument("-d", "--device", type = str, default = "cuda:3", help = "GPU device name")
+    parser.add_argument("-sm", "--save_model_path", type = str, default = "saved_models", help = "Path to the directory to save a trained model")
     parser.add_argument("-sp", "--save_path", type = str, default = "results", help = "Path to dir to save inference results")
     parser.add_argument("-dl", "--dls_dir", type = str, default = "saved_dls", help = "Path to dir to save dataloaders")
     
