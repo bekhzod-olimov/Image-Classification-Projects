@@ -1,3 +1,4 @@
+# Import libraries
 import torch, yaml, os, pickle, timm, argparse
 from utils import get_state_dict, get_preds, visualize, grad_cam
 
@@ -30,15 +31,18 @@ def run(args):
     print(f"Dataloader and class names are successfully loaded!")
     print(f"There are {len(test_dl)} batches and {len(cls_names)} classes in the test dataloader!")
 
+    # Get the model to be trained
     model = timm.create_model(args.model_name, num_classes = len(cls_names)); model.to(args.device)
-    # load params
+    # Load the trained model parameters
     print("\nLoading the state dictionary...")
     state_dict = get_state_dict(f"{args.save_model_path}/{args.model_name}_{args.dataset_name}_best.ckpt")
-    model.load_state_dict(state_dict, strict=True)
+    model.load_state_dict(state_dict, strict = True)
     print(f"The {args.model_name} state dictionary is successfully loaded!\n")
+    # Get input images, labels, and the predicted labels
     all_ims, all_preds, all_gts = get_preds(model, test_dl, args.device)
-    
+    # Visualization
     visualize(all_ims, all_preds, all_gts, num_ims = 10, rows = 2, cls_names = cls_names, save_path = args.save_path, save_name = args.dataset_name)
+    # Grad CAM
     grad_cam(model, all_ims, num_ims = 10, rows = 2, save_path = args.save_path, save_name = args.dataset_name)
     
 if __name__ == "__main__":
