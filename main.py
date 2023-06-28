@@ -46,24 +46,21 @@ def run(args):
         # Split the dataloader to train, validation, and test dataloaders
         tr_dl, val_dl, test_dl, cls_names, n_cls = get_dl(ds_name = args.dataset_name, tr_tfs = tr_tfs, val_tfs = val_tfs, bs = args.batch_size)
     
+    # Save train, validation, and test dataloaders
     if os.path.isfile(f"{args.dls_dir}/{args.dataset_name}_tr_dl"): pass
-    else:
-        torch.save(tr_dl,   f"{args.dls_dir}/{args.dataset_name}_tr_dl")
-        torch.save(val_dl,  f"{args.dls_dir}/{args.dataset_name}_val_dl")
-        torch.save(test_dl, f"{args.dls_dir}/{args.dataset_name}_test_dl")
-    
+    else: torch.save(tr_dl,   f"{args.dls_dir}/{args.dataset_name}_tr_dl"); torch.save(val_dl,  f"{args.dls_dir}/{args.dataset_name}_val_dl"); torch.save(test_dl, f"{args.dls_dir}/{args.dataset_name}_test_dl")
     # tr_dl, val_dl = torch.load(f"{args.dls_dir}/{args.dataset_name}_tr_dl"), torch.load(f"{args.dls_dir}/{args.dataset_name}_val_dl")
     
+    # Create a class names file name
     cls_names_file = f"{args.dls_dir}/{args.dataset_name}_cls_names.pkl"
-    if os.path.isfile(cls_names_file): pass
-    else:
-        with open(f"{cls_names_file}", "wb") as f: 
-            pickle.dump(cls_names, f)
+    # Save the class names
+    with open(f"{cls_names_file}", "wb") as f: pickle.dump(cls_names, f)
 
     # Samples required by the custom ImagePredictionLogger callback to log image predictions.
     val_samples = next(iter(val_dl))
     val_imgs, val_labels = val_samples[0], val_samples[1]
 
+    # Get the model to be trained
     # model = LitModel(args.inp_im_size, args.model_name, num_classes) if args.dataset_name == 'custom' else LitModel((32, 32), args.model_name, num_classes)
     model = LitModel(args.inp_im_size, args.model_name, n_cls) 
 
@@ -72,16 +69,17 @@ def run(args):
 
     # Initialize a trainer
     trainer = pl.Trainer(max_epochs = args.epochs, accelerator="gpu", devices = args.devices, strategy = "ddp", logger = wandb_logger,
-                         callbacks = [EarlyStopping(monitor = 'validation_acc', mode = 'max', patience=20), ImagePredictionLogger(val_samples, cls_names),
-                                      ModelCheckpoint(monitor = 'validation_loss', dirpath = args.save_model_path, filename = f'{args.model_name}_{args.dataset_name}_best')])
+                         callbacks = [EarlyStopping(monitor = "validation_acc", mode = "max", patience = 5), ImagePredictionLogger(val_samples, cls_names),
+                                      ModelCheckpoint(monitor = "validation_loss", dirpath = args.save_model_path, filename = f"{args.model_name}_{args.dataset_name}_best")])
 
-    
+    # Set the training process start time
     start_time = time()
+    # Start training
     trainer.fit(model, tr_dl, val_dl)
+    # Get train and validation times lists
     train_times, valid_times = model.get_stats()
-    torch.save(train_times, f"{args.stats_dir}/pl_train_times_{args.devices}_gpu")
-    torch.save(valid_times[1:], f"{args.stats_dir}/pl_valid_times_{args.devices}_gpu")
-
+    # Save the stats
+    torch.save(train_times, f"{args.stats_dir}/pl_train_times_{args.devices}_gpu"); torch.save(valid_times[1:], f"{args.stats_dir}/pl_valid_times_{args.devices}_gpu")
     # Close wandb run
     wandb.finish()
     
