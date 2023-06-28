@@ -1,11 +1,9 @@
 # Import libraries
 import torch, wandb, argparse, yaml, os, pickle, pytorch_lightning as pl
-from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.loggers import WandbLogger; from time import time
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks import ModelCheckpoint, Callback
-from datasets import CustomDataloader, get_dl
-from transformations import get_tfs
-from time import time
+from datasets import CustomDataloader, get_dl; from transformations import get_tfs
 from model import LitModel, ImagePredictionLogger
 
 def run(args):
@@ -27,18 +25,25 @@ def run(args):
     # Get train arguments 
     argstr = yaml.dump(args.__dict__, default_flow_style = False)
     print(f"\nTraining Arguments:\n\n{argstr}")
-    
+
+    # wandb login
     os.system("wandb login --relogin 3204eaa1400fed115e40f43c7c6a5d62a0867ed1")
-    os.makedirs(args.dls_dir, exist_ok=True)
-    os.makedirs(args.stats_dir, exist_ok=True)
+    # Create directories
+    os.makedirs(args.dls_dir, exist_ok = True); os.makedirs(args.stats_dir, exist_ok = True)
     
+    # Get the dataloaders
     if args.dataset_name in ["cars", "ghim"]:
+        # Get transformations to be applied
         tfs = get_tfs(args.dataset_name, args.inp_im_size)[1]
+        # Get the train dataloader
         dl = CustomDataloader(ds_name = args.dataset_name, transformations = tfs, bs = args.batch_size)
+        # Split the dataloader to train, validation, and test dataloaders
         tr_dl, val_dl, test_dl = dl.get_dls()
         cls_names, n_cls = dl.get_info()
     elif args.dataset_name in ["cifar10", "mnist"]:
+        # Get transformations to be applied
         tr_tfs, val_tfs = get_tfs(args.dataset_name, args.inp_im_size)
+        # Split the dataloader to train, validation, and test dataloaders
         tr_dl, val_dl, test_dl, cls_names, n_cls = get_dl(ds_name = args.dataset_name, tr_tfs = tr_tfs, val_tfs = val_tfs, bs = args.batch_size)
     
     if os.path.isfile(f"{args.dls_dir}/{args.dataset_name}_tr_dl"): pass
