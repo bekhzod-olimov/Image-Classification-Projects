@@ -62,13 +62,13 @@ def run(args):
 
     # Get the model to be trained
     # model = LitModel(args.inp_im_size, args.model_name, num_classes) if args.dataset_name == 'custom' else LitModel((32, 32), args.model_name, num_classes)
-    model = LitModel(args.inp_im_size, args.model_name, n_cls) 
+    model = LitModel(input_shape = args.inp_im_size, model_name = args.model_name, num_classes = n_cls, lr = args.learning_rate) 
 
     # Initialize wandb logger
-    wandb_logger = WandbLogger(project='im_class', job_type='train', name=f"{args.dataset_name}_{args.model_name}_{args.batch_size}")
+    wandb_logger = WandbLogger(project = "im_class", job_type = "train", name = f"{args.dataset_name}_{args.model_name}_{args.batch_size}")
 
     # Initialize a trainer
-    trainer = pl.Trainer(max_epochs = args.epochs, accelerator="gpu", devices = args.devices, strategy = "ddp", logger = wandb_logger,
+    trainer = pl.Trainer(max_epochs = args.epochs, accelerator = "gpu", devices = args.devices, strategy = "ddp", logger = wandb_logger,
                          callbacks = [EarlyStopping(monitor = "validation_acc", mode = "max", patience = 5), ImagePredictionLogger(val_samples, cls_names),
                                       ModelCheckpoint(monitor = "validation_loss", dirpath = args.save_model_path, filename = f"{args.model_name}_{args.dataset_name}_best")])
 
@@ -86,19 +86,19 @@ def run(args):
 if __name__ == "__main__":
     
     # Initialize Argument Parser    
-    parser = argparse.ArgumentParser(description = 'Image Classification Training Arguments')
+    parser = argparse.ArgumentParser(description = "Image Classification Training Arguments")
     
     # Add arguments to the parser
     parser.add_argument("-bs", "--batch_size", type = int, default = 64, help = "Mini-batch size")
     parser.add_argument("-is", "--inp_im_size", type = tuple, default = (224, 224), help = "Input image size")
-    parser.add_argument("-dn", "--dataset_name", type = str, default = 'ghim', help = "Dataset name for training")
-    parser.add_argument("-mn", "--model_name", type = str, default = 'rexnet_150', help = "Model name for backbone")
+    parser.add_argument("-dn", "--dataset_name", type = str, default = "ghim", help = "Dataset name for training")
+    parser.add_argument("-mn", "--model_name", type = str, default = "rexnet_150", help = "Model name for backbone")
     # parser.add_argument("-mn", "--model_name", type = str, default = 'vit_base_patch16_224', help = "Model name for backbone")
     # parser.add_argument("-mn", "--model_name", type = str, default = 'vgg16_bn', help = "Model name for backbone")
     parser.add_argument("-d", "--devices", type = int, default = 4, help = "Number of GPUs for training")
     parser.add_argument("-lr", "--learning_rate", type = float, default = 1e-3, help = "Learning rate value")
     parser.add_argument("-e", "--epochs", type = int, default = 20, help = "Train epochs number")
-    parser.add_argument("-sm", "--save_model_path", type = str, default = 'saved_models', help = "Path to the directory to save a trained model")
+    parser.add_argument("-sm", "--save_model_path", type = str, default = "saved_models", help = "Path to the directory to save a trained model")
     parser.add_argument("-sd", "--stats_dir", type = str, default = "stats", help = "Path to dir to save train statistics")
     parser.add_argument("-dl", "--dls_dir", type = str, default = "saved_dls", help = "Path to dir to save dataloaders")
     
