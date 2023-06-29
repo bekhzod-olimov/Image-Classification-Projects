@@ -5,12 +5,32 @@ from time import time; from tqdm import tqdm; from matplotlib import pyplot as p
 from pytorch_grad_cam import GradCAM; from pytorch_grad_cam.utils.image import show_cam_on_image
 
 def get_state_dict(checkpoint_path):
+
+    """
     
+    This function gets a path to the trained model checkpoint and return new state dictionary.
+
+    Parameter:
+    
+        checkpoint_path       - a path tho the checkpoint with the trained model, torch object.
+
+    Output:
+
+        new state dictionary  - a new state dictionary where parameter names are compatible with torch load.
+    
+    """
+    
+    # Get checkpoint that is trained on pytorch lighting
     checkpoint = torch.load(checkpoint_path)
+    # Create a new dictionary
     new_state_dict = OD()
+    
+    # Go through the checkpoint dictionary items
     for k, v in checkpoint["state_dict"].items():
-        name = k.replace("model.", "") # remove `model.`
+        # Remove "model."
+        name = k.replace("model.", "") 
         new_state_dict[name] = v
+    
     return new_state_dict
 
 def tn2np(t, inv_fn=None): return (inv_fn(t) * 255).detach().cpu().permute(1,2,0).numpy().astype(np.uint8) if inv_fn is not None else (t * 255).detach().cpu().permute(1,2,0).numpy().astype(np.uint8)
