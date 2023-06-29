@@ -33,9 +33,29 @@ def get_state_dict(checkpoint_path):
     
     return new_state_dict
 
-def tn2np(t, inv_fn=None): return (inv_fn(t) * 255).detach().cpu().permute(1,2,0).numpy().astype(np.uint8) if inv_fn is not None else (t * 255).detach().cpu().permute(1,2,0).numpy().astype(np.uint8)
+# A function to convert tensor to numpy array 
+def tn2np(t, inv_fn = None): return (inv_fn(t) * 255).detach().cpu().permute(1,2,0).numpy().astype(np.uint8) if inv_fn is not None else (t * 255).detach().cpu().permute(1,2,0).numpy().astype(np.uint8)
 
 def get_preds(model, test_dl, device):
+
+    """
+    
+    This function gets several parameters and gets predictions based on them.
+
+    Parameters:
+
+        model     - a trained model, timm model object;
+        test_dl   - test dataloader, torch dataloader object;
+        device    - gpu name, str.
+
+    Output:
+
+        all_ims   - images from the test dataloader, list;
+        all_preds - predictions of the model, list;
+        all_gts   - ground truth labels, list.        
+    
+    """
+    
     print("Start inference...")
     
     all_ims, all_preds, all_gts, acc = [], [], [], 0
