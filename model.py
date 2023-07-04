@@ -118,13 +118,38 @@ class LitModel(pl.LightningModule):
     def get_stats(self): return self.train_times, self.validation_times
     
 class ImagePredictionLogger(Callback):
+
+    """
     
-    def __init__(self, val_samples, cls_names=None, num_samples=4):
+    This class gets several parameters and visualizes several input images and predictions in the end of validation process.
+
+    Parameters:
+
+        val_samples       - validation samples, torch dataloader object;
+        cls_names         - class names, list;
+        num_samples       - number of samples to be visualized, int.
+      
+    """
+    
+    def __init__(self, val_samples, cls_names = None, num_samples = 4):
         super().__init__()
+        # Get class arguments
         self.num_samples, self.cls_names = num_samples, cls_names
+        # Extract images and their corresponding labels
         self.val_imgs, self.val_labels = val_samples
         
     def on_validation_epoch_end(self, trainer, pl_module):
+
+        """
+        
+        This function gets several parameters and visualizes images with their predictions.
+
+        Parameters:
+
+            trainer      - trainer, pytorch lightning trainer object;
+            pl_module    - model class, pytorch lightning module object.
+        
+        """
         # Bring the tensors to CPU
         val_imgs = self.val_imgs.to(device=pl_module.device)
         val_labels = self.val_labels.to(device=pl_module.device)
