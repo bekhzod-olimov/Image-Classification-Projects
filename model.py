@@ -1,3 +1,4 @@
+# Import libraries
 import torch, torchmetrics, timm, wandb, pytorch_lightning as pl, os
 from torch import nn
 from torch.nn import functional as F
@@ -37,8 +38,10 @@ class LitModel(pl.LightningModule):
     # Feed forward of the model
     def forward(self, inp): return self.model(inp)
     
+    # Set time when the epoch is started
     def on_train_epoch_start(self): self.train_start_time = time()
     
+    # Compute time when the epoch is finished
     def on_train_epoch_end(self): self.train_elapsed_time = time() - self.train_start_time; self.train_times.append(self.train_elapsed_time); self.log("train_time", self.train_elapsed_time, prog_bar = True)
         
     def training_step(self, batch, batch_idx):
@@ -105,10 +108,13 @@ class LitModel(pl.LightningModule):
         
         return loss
     
+    # Set the time when validation process is started
     def on_validation_epoch_start(self): self.validation_start_time = time()
     
+    # Compute the time when validation process is finished
     def on_validation_epoch_end(self): self.validation_elapsed_time = time() - self.validation_start_time; self.validation_times.append(self.validation_elapsed_time); self.log("validation_time", self.validation_elapsed_time, prog_bar = True)
     
+    # Get stats of the train and validation times
     def get_stats(self): return self.train_times, self.validation_times
     
 class ImagePredictionLogger(Callback):
