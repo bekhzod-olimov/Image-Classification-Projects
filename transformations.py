@@ -1,5 +1,21 @@
 # Import library
 from torchvision import transforms as T
 
-# Get transformations based on the input image dimensions
-def get_tfs(ds_name, im_dims = (224, 224)): return [T.Compose([T.Resize(im_dims), T.RandomHorizontalFlip(), T.ToTensor()]), T.Compose([T.Resize(im_dims), T.ToTensor()])]
+def get_tfs(ds_name, im_dims = (224, 224)): 
+
+  """
+  
+  This function gets several parameters and returns transformations to be applied for the dataset.
+
+  Parameters:
+
+    ds_name      - name of the dataset, str;
+    im_dims      - image dimensions, tuple.
+
+  Output:
+
+    out          - transformations to be applied, list.
+  
+  """
+  
+  return [T.Compose([T.Resize(im_dims), T.RandomHorizontalFlip(), T.ToTensor()]), T.Compose([T.Resize(im_dims), T.ToTensor()])]
