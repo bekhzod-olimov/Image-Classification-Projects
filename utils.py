@@ -58,17 +58,26 @@ def get_preds(model, test_dl, device):
     
     print("Start inference...")
     
+    # Set the lists to track the metrics and initial accuracy score
     all_ims, all_preds, all_gts, acc = [], [], [], 0
-    start_time = time()
+    # Start time for the inference
+    start_time = time()    
+    # Go through the test dataloader
     for idx, batch in tqdm(enumerate(test_dl)):
-        # if idx == 1: break
+        # Get images and their corresponding labels
         ims, gts = batch
+        # Add them to the list
         all_ims.extend(ims); all_gts.extend(gts);        
+        # Get predictions
         preds = model(ims.to(device))
+        # Get predicted classes
         pred_clss = torch.argmax(preds.data, dim = 1)
+        # Add the predicted classes to the list
         all_preds.extend(pred_clss)
+        # Compute accuracy score for the batch
         acc += (pred_clss == gts.to(device)).sum().item()
         
+    # Verbose
     print(f"Inference is completed in {(time() - start_time):.3f} secs!")
     print(f"Accuracy of the model is {acc / len(test_dl.dataset) * 100:.3f}%")
     
