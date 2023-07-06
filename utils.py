@@ -103,20 +103,30 @@ def visualize(all_ims, all_preds, all_gts, num_ims, rows, cls_names, save_path, 
     """
     
     print("Start visualization...")
+    # Set the figure size
     plt.figure(figsize = (20, 20))
+    # Get random indices from the dataloader based on the number of imags
     indices = [random.randint(0, len(all_ims) - 1) for _ in range(num_ims)]
     
+    # Go through random indices list
     for idx, ind in enumerate(indices):
         
+        # Get an image
         im = all_ims[ind]
+        # Get a label
         gt = all_gts[ind].item()
+        # Get a predicted label
         pr = all_preds[ind].item()
-        
+        # Create a subplot
         plt.subplot(rows, num_ims // rows, idx + 1)
+        # Show the input image
         plt.imshow(tn2np(im))
+        # Turn off the axis
         plt.axis("off")
+        # Set the title
         plt.title(f"GT: {cls_names[gt]} | Pred: {cls_names[pr]}")
     
+    # Save the figure
     plt.savefig(f"{save_path}/{save_name}_preds.png")
     print(f"The visualization can be seen in {save_path} directory.")
     
