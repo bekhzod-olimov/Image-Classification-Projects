@@ -85,6 +85,23 @@ def get_preds(model, test_dl, device):
     
 def visualize(all_ims, all_preds, all_gts, num_ims, rows, cls_names, save_path, save_name):
     
+    """
+
+    This function gets several parameters and visualizes the results of the inference.
+
+    Parameters:
+
+        all_ims          - images from the dataloader, tensor;
+        all_preds        - predicted classes from the dataloader, tensor;
+        all_gts          - labels from the dataloader, tensor;
+        num_ims          - number of images to be visualized, int;
+        rows             - number of rows in the plot, int;
+        cls_names        - class names of the dataset, list;
+        save_path        - path to save the visualization result, str;
+        save_name        - prefix of the name to be saved, str.
+    
+    """
+    
     print("Start visualization...")
     plt.figure(figsize = (20, 20))
     indices = [random.randint(0, len(all_ims) - 1) for _ in range(num_ims)]
