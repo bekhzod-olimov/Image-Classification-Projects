@@ -144,6 +144,10 @@ def grad_cam(model, all_ims, num_ims, rows, save_path, save_name):
         rows            - number of rows in the plot, int;
         save_path       - path to save the visualization result, str;
         save_name       - prefix of the name to be saved, str.
+
+    Output:
+
+        GradCAM visualization images.
     
     """
     
