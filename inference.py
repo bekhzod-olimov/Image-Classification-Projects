@@ -34,7 +34,7 @@ def run(args):
 
     # Get the model to be trained
     model = timm.create_model(args.model_name, num_classes = len(cls_names)); model.to(args.device)
-    # Load the trained model parameters
+    # Load the pre-trained model weights
     print("\nLoading the state dictionary...")
     state_dict = get_state_dict(f"{args.save_model_path}/{args.model_name}_{args.dataset_name}_best.ckpt")
     model.load_state_dict(state_dict, strict = True)
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     parser.add_argument("-mn", "--model_name", type = str, default = "rexnet_150", help = "Model name to be trained (from timm library)")
     # parser.add_argument("-mn", "--model_name", type = str, default = 'vit_base_patch16_224', help = "Model name for backbone")
     # parser.add_argument("-mn", "--model_name", type = str, default = 'vgg16_bn', help = "Model name for backbone")
-    parser.add_argument("-d", "--device", type = str, default = "cuda:3", help = "GPU device name")
+    parser.add_argument("-d", "--device", type = str, default = "cuda", help = "GPU device name")
     parser.add_argument("-sm", "--save_model_path", type = str, default = "saved_models", help = "Path to the directory to save a trained model")
     parser.add_argument("-sp", "--save_path", type = str, default = "results", help = "Path to dir to save inference results")
     parser.add_argument("-dl", "--dls_dir", type = str, default = "saved_dls", help = "Path to dir to save dataloaders")
