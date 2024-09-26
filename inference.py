@@ -23,9 +23,10 @@ def run(args):
     # Get train arguments 
     argstr = yaml.dump(args.__dict__, default_flow_style = False)
     print(f"\nTraining Arguments:\n\n{argstr}")
-    
-    os.makedirs(args.save_path, exist_ok=True)
-    
+
+    # Make save path dir
+    os.makedirs(args.save_path, exist_ok = True)
+    # Load the saved test dataloader
     test_dl = torch.load(f"{args.dls_dir}/{args.dataset_name}_test_dl")
     with open(f"{args.dls_dir}/{args.dataset_name}_cls_names.pkl", "rb") as f: cls_names = pickle.load(f)
     print(f"Dataloader and class names are successfully loaded!")
