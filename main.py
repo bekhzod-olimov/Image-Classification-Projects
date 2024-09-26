@@ -49,7 +49,6 @@ def run(args):
     # Save train, validation, and test dataloaders
     if os.path.isfile(f"{args.dls_dir}/{args.dataset_name}_tr_dl"): pass
     else: torch.save(tr_dl,   f"{args.dls_dir}/{args.dataset_name}_tr_dl"); torch.save(val_dl,  f"{args.dls_dir}/{args.dataset_name}_val_dl"); torch.save(test_dl, f"{args.dls_dir}/{args.dataset_name}_test_dl")
-    # tr_dl, val_dl = torch.load(f"{args.dls_dir}/{args.dataset_name}_tr_dl"), torch.load(f"{args.dls_dir}/{args.dataset_name}_val_dl")
     
     # Create a class names file name
     cls_names_file = f"{args.dls_dir}/{args.dataset_name}_cls_names.pkl"
@@ -86,7 +85,7 @@ def run(args):
 if __name__ == "__main__":
     
     # Initialize Argument Parser    
-    parser = argparse.ArgumentParser(description = "Image Classification Training Arguments")
+    parser = argparse.ArgumentParser(description = "Image Classification Model Training Arguments")
     
     # Add arguments to the parser
     parser.add_argument("-bs", "--batch_size", type = int, default = 64, help = "Mini-batch size")
