@@ -1,9 +1,7 @@
 # Import libraries
 import torch, torchmetrics, timm, wandb, pytorch_lightning as pl, os
-from torch import nn
-from torch.nn import functional as F
-from pytorch_lightning.callbacks import Callback
-from time import time
+from torch import nn; from torch.nn import functional as F
+from pytorch_lightning.callbacks import Callback; from time import time
 
 class LitModel(pl.LightningModule):
     
