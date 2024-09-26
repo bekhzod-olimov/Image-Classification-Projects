@@ -1,11 +1,10 @@
 # Import libraries
 import torch, torchvision, os
 from torch.utils.data import random_split, Dataset, DataLoader
-from torch import nn
-from PIL import Image
+from torch import nn; from PIL import Image
 from torchvision import transforms as T
 from torchvision.datasets import ImageFolder
-torch.manual_seed(2023)
+torch.manual_seed(2024)
 
 def get_dl(ds_name, tr_tfs, val_tfs, bs):
     
@@ -214,6 +213,7 @@ class CustomDataloader(nn.Module):
             is_valid   - whether the image in the input path is a valid image file or not, bool  
         
         """
+        
         if os.path.splitext(path)[-1] in self.im_files: return True
         return False
     
